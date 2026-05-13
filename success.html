@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mensagem Enviada | Julio Aguiar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #030a0e;
+      --bg2: #060f15;
+      --bg3: #0a1520;
+      --green: #00ff88;
+      --cyan: #00e5ff;
+      --magenta: #ff00a0;
+      --text: #c8e8f0;
+      --muted: #4a7080;
+      --border: #0f3040;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+          body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: none;
+       }
+
+    
+    .cursor {
+      width: 12px; height: 12px;
+         background: var(--cyan);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+       transform: translate(-50%,-50%);
+      transition: transform 0.05s, background 0.2s;
+      box-shadow: 0 0 8px var(--cyan), 0 0 20px var(--cyan);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--cyan);
+      border-radius: 50%;
+       position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.15s;
+      opacity: 0.5;
+    }
+
+  
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+        background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,255,136,0.015) 2px, rgba(0,255,136,0.015) 4px
+      );
+      pointer-events: none; z-index: 1000;
+    }
+
+    
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+   
+    .noise-bg {
+      position: fixed; inset: 0;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999;
+    }
+
+  
+    .card {
+      position: relative; z-index: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 60px 56px;
+      max-width: 560px;
+      width: 90%;
+      text-align: center;
+      animation: fadeUp 0.7s ease forwards;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--magenta), var(--cyan), var(--green));
+    }
+   
+    .card::after {
+      content: '';
+      position: absolute; bottom: 0; right: 0;
+      width: 20px; height: 20px;
+      border-bottom: 2px solid var(--cyan);
+      border-right: 2px solid var(--cyan);
+    }
+    .corner-tl {
+      position: absolute; top: 0; left: 0;
+      width: 20px; height: 20px;
+      border-top: 2px solid var(--green);
+      border-left: 2px solid var(--green);
+    }
+
+   
+    .icon-wrap {
+      width: 80px; height: 80px;
+      margin: 0 auto 32px;
+      border: 1px solid var(--green);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .icon-wrap::before {
+      content: '';
+      position: absolute; inset: -6px;
+      border: 1px solid rgba(0,255,136,0.2);
+    }
+    .icon-wrap svg { width: 36px; height: 36px; color: var(--green); }
+
+    
+    .status-line {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--green);
+      animation: blink 1s infinite;
+    }
+
+    
+    .title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(22px, 5vw, 32px);
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .title span { color: var(--cyan); display: block; }
+
+    .desc {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+    .desc strong { color: var(--text); }
+
+  
+    .log {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 16px 20px;
+      margin-bottom: 36px;
+      text-align: left;
+    }
+    .log-line {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      opacity: 0;
+      animation: appear 0.3s ease forwards;
+    }
+       .log-line:last-child { margin-bottom: 0; }
+    .log-line .ok    { color: var(--green); }
+    .log-line .info  { color: var(--cyan); }
+    .log-line .warn  { color: var(--magenta); }
+    .log-line:nth-child(1) { animation-delay: 0.5s; }
+    .log-line:nth-child(2) { animation-delay: 1.0s; }
+    .log-line:nth-child(3) { animation-delay: 1.5s; }
+    .log-line:nth-child(4) { animation-delay: 2.0s; }
+
+   
+        .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 14px 36px;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s;
+      cursor: none;
+    }
+    .btn-back::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+      z-index: 0;
+    }
+    .btn-back:hover { color: var(--bg); }
+    .btn-back:hover::before { transform: scaleX(1); }
+    .btn-back span, .btn-back svg { position: relative; z-index: 1; }
+    .btn-back svg { width: 14px; height: 14px; }
+
+  
+
+
+
+  /*contagem*/
+
+
+    .countdown {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 20px;
+      letter-spacing: 2px;
+    }
+    .countdown span { color: var(--green); }
+
+
+  /*animação*/
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.4); }
+      50%       { box-shadow: 0 0 0 12px rgba(0,255,136,0); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+    @keyframes appear {
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise-bg"></div>
+  <div class="cursor"      id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <div class="card">
+    <div class="corner-tl"></div>
+
+    <div class="icon-wrap">
+    
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+
+    <div class="status-line">
+      <span class="status-dot"></span>
+      TRANSMISSÃO CONCLUÍDA
+    </div>
+
+    <h1 class="title">
+      MENSAGEM
+      <span>ENVIADA</span>
+    </h1>
+
+    <p class="desc">
+      Sua mensagem chegou com sucesso.<br/>
+      <strong>Julio Aguiar</strong> receberá sua solicitação e retornará em breve.
+    </p>
+
+    <div class="log">
+      <div class="log-line"><span class="ok">[OK]</span> &nbsp;Conexão estabelecida</div>
+      <div class="log-line"><span class="ok">[OK]</span> &nbsp;Dados criptografados</div>
+      <div class="log-line"><span class="info">[→]</span> &nbsp;&nbsp;Pacote enviado para <span class="info">juliocostadeaguiar@gmail.com</span></div>
+      <div class="log-line"><span class="ok">[✓]</span> &nbsp;Entrega confirmada</div>
+    </div>
+
+    <a href="index.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      <span>Voltar ao Portfólio</span>
+    </a>
+
+    <p class="countdown">
+      Redirecionando em <span id="timer">10</span>s...
+    </p>
+  </div>
+
+  <script>
+    
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      setTimeout(() => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top  = e.clientY + 'px';
+      }, 80);
+    });
+    document.querySelectorAll('a').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform  = 'translate(-50%,-50%) scale(2)';
+        cursor.style.background = 'var(--magenta)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform  = 'translate(-50%,-50%) scale(1)';
+        cursor.style.background = 'var(--cyan)';
+      });
+    });
+
+  
+    let seconds = 10;
+    const timerEl = document.getElementById('timer');
+    const interval = setInterval(() => {
+      seconds--;
+      timerEl.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        window.location.href = 'index.html';
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
